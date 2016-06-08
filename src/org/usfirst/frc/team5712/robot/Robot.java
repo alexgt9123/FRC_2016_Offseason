@@ -1,10 +1,12 @@
 
 package org.usfirst.frc.team5712.robot;
 
+//Command based imports
 import org.usfirst.frc.team5712.robot.subsystems.*;
 import org.usfirst.frc.team5712.robot.commands.*;
 import org.usfirst.frc.team5712.robot.OI;
 
+//Default Robot imports
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -12,6 +14,16 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+//JavaCV imports
+import static org.bytedeco.javacpp.opencv_core.*;
+import static org.bytedeco.javacpp.opencv_imgproc.*;
+import static org.bytedeco.javacpp.opencv_highgui.*;
+import static org.bytedeco.javacpp.opencv_imgcodecs.*;
+
+//OpenCV imports
+import org.opencv.core.Core;
+
 /**
  * 
  * @author Team 5712
@@ -20,15 +32,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 
-	public static boolean IS_COMPETITION_ROBOT;
+    public static boolean IS_COMPETITION_ROBOT;
 	
-	public static DriveSubsystem driveSubsystem = new DriveSubsystem();	
-	public static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-	public static CameraSubsystem cameraSubsystem = new CameraSubsystem();
+    public static DriveSubsystem driveSubsystem = new DriveSubsystem();	
+    public static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+    public static CameraSubsystem cameraSubsystem = new CameraSubsystem();
 	
-	public static OI oi;
+    public static OI oi;
 	
-	//DriveStick commands
+    //DriveStick commands
     Command invertMotorsFalseCommand, invertMotorsTrueCommand;
     Command shiftGearCommand;
     Command solenoidInCommand, solenoidOutCommand;
@@ -69,6 +81,29 @@ public class Robot extends IterativeRobot {
 		driveSubsystem.resetGyro();
 		driveSubsystem.resetDriveEncoders();
 		shooterSubsystem.resetShooterEncoder();
+		
+		/*
+		*All code after this point (in the RobotInt() function) is for vision testing
+		*/
+		
+		//This loads an image to the variable 'img'
+		IplImage img = cvLoadImage("Test.png"); //The directory for images starts in the projects workspace in eclipse
+		
+		//These are the images that are the result of image processing
+		IplImage hsvimg = cvCreateImage(cvGetSize(img), IPL_DEPTH_8U, 3); //Makes an image that is the same size as 'img', with an 8 bit resolution, with 3 channels since HSV images have 3 channels
+		IplImage grayimg = cvCreatImage(cvGetSize(img), IPL_DEPTH_8U, 1); //Same as above except it uses one channel because grayscale images only use one channel per pixel
+		
+		cvCvtColor(img, hsvimg, CV_BGR2HSV); //'img' is the image that is the templae for color conversion, hsvimg is the image that the new image will be stored to
+		cvCvtColor(img, grayimg, CV_BGR2GRAY); //same as above but instead of converting to HSV it is converting it to grayscale
+		
+		cvShowImage("Original Image", img); //This line displays the image in a new window on the PC (if you have this running on the PC I am not sure if it works if this is runnign on the roboRio)
+		cvShowImage("HSV Image", img);
+		cvShowImage("Grayscale Image", img);
+		//cvWaitKey(); //uncomment this if the windows are closing right after they open
+		
+		cvReleaseImage(img);//This dealcolates data to this image (basically deletes it)
+		cvReleaseImage(hsvimg);
+		cvReleaseImage(grayimg);
     }
 	
     public void disabledInit(){

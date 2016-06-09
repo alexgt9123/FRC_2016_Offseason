@@ -86,6 +86,8 @@ public class Robot extends IterativeRobot {
 		*All code after this point (in the RobotInt() function) is for vision testing
 		*/
 		
+		/*
+		 * 
 		//This loads an image to the variable 'img'
 		IplImage img = cvLoadImage("Test.png"); //The directory for images starts in the projects workspace in eclipse
 		
@@ -104,6 +106,20 @@ public class Robot extends IterativeRobot {
 		cvReleaseImage(img);//This dealcolates data to this image (basically deletes it)
 		cvReleaseImage(hsvimg);
 		cvReleaseImage(grayimg);
+		*
+		*/
+		
+		//This is a webcam capture stuff
+		CvCapture webcam = cvCreateCameraCapture(CV_CAP_ANY); //Change CV_CAP_ANY to an integer to select different webcams
+		IplImage frame; //The variable frame is where the frame of the webcam is stored
+		cvNamedWindow("webcam output",CV_WINDOW_AUTOSIZE); //Makes a new window named: 'webcam output' that autosizes to the content inside it
+		
+		FrameRecorder webcam_recorder = new OpenCVFrameRecorder("RoboRecording.avi",320,240);
+    		webcam.setVideoCodec(CV_FOURCC('M','J','P','G');
+    		webcam.setFrameRate(30);
+    		webcam.setPixelFormat(1);
+    		webcam.start();
+		//The rest of the webcam capture stuff is located in the autonomousPeriodic() and teleopPeriodic() functions respectively
     }
 	
     public void disabledInit(){
@@ -140,14 +156,24 @@ public class Robot extends IterativeRobot {
     	Robot.driveSubsystem.resetGyro();
     	Robot.shooterSubsystem.resetShooterEncoder();
     	
-		driveSubsystem.drive.arcadeDrive(oi.driveStick);
+	driveSubsystem.drive.arcadeDrive(oi.driveStick);
     }
 
     public void teleopPeriodic() {
     	Robot.driveSubsystem.display();
     	Robot.shooterSubsystem.display();
+    	
+    	frame = cvQueryFrame(capture);
+    	
+    	if(frame == null) {System.out.println("ERROR:No webcam feedback"); break;}
+    	
+    	cvShowImage("webcam output",frame);
+    	webcam.record(frame);
+    	char c = (char) cvWaitKey(1);
+    	
+    	if(c = 'q') webcam.stop();
 
-		//Robot.driveSubsystem.degreesTurn = (double) autoChooser.getSelected();
+	//Robot.driveSubsystem.degreesTurn = (double) autoChooser.getSelected();
     }
     
     public void testPeriodic() {

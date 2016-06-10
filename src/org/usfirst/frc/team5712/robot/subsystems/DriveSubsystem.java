@@ -26,7 +26,6 @@ public class DriveSubsystem extends Subsystem {
 	SerialPort serial_port;
 		
 	byte update_rate_hz = 50;
-	public double angle = gyro.getYaw();
 	public double degreesTurn;
 	
 	public DriveSubsystem(){
@@ -73,17 +72,17 @@ public class DriveSubsystem extends Subsystem {
     	
     	if (gyro.getYaw() > -120) {
 			//turn robot until yaw is between -145 and -150
-			leftFront.set(-0.4 + (-120 - angle)/180); 
-			leftRear.set(0.4 + (-120 - angle)/180);
-			rightFront.set(-0.4 + (-120 - angle)/180);
-			rightRear.set(-0.4 + (-120 - angle)/180);
+			leftFront.set(-0.4 + (-120 - gyro.getYaw())/180); 
+			leftRear.set(0.4 + (-120 - gyro.getYaw())/180);
+			rightFront.set(-0.4 + (-120 - gyro.getYaw())/180);
+			rightRear.set(-0.4 + (-120 - gyro.getYaw())/180);
 		}
 		else if(gyro.getYaw() < -123) {
 			//turns the robot back if desired angle is passed
-			leftFront.set(0.4 - (-120 - angle)/180); 
-			leftRear.set(-0.4 - (-120 - angle)/180);
-			rightFront.set(0.4 - (-120 - angle)/180);
-			rightRear.set(0.4 - (-120 - angle)/180);
+			leftFront.set(0.4 - (-120 - gyro.getYaw())/180); 
+			leftRear.set(-0.4 - (-120 - gyro.getYaw())/180);
+			rightFront.set(0.4 - (-120 - gyro.getYaw())/180);
+			rightRear.set(0.4 - (-120 - gyro.getYaw())/180);
 		}
 		else if(gyro.getYaw() < -120 && gyro.getYaw() > -123) {
 			//stop robot when yaw is between -145 and -150
@@ -97,15 +96,15 @@ public class DriveSubsystem extends Subsystem {
     public void turnXdegrees(double degreesTurn){
     	if (gyro.getYaw() > -degreesTurn ) {
     		leftFront.set(-0.4 + (-degreesTurn - angle)/180); 
-			leftRear.set(0.4 + (-degreesTurn - angle)/180);
-			rightFront.set(-0.4 + (-degreesTurn - angle)/180);
-			rightRear.set(-0.4 + (-degreesTurn - angle)/180);
+			leftRear.set(0.4 + (-degreesTurn - gyro.getYaw())/180);
+			rightFront.set(-0.4 + (-degreesTurn - gyro.getYaw())/180);
+			rightRear.set(-0.4 + (-degreesTurn - gyro.getYaw())/180);
 		}
     	else if (gyro.getYaw() < (-degreesTurn - 3)){
-    		leftFront.set(0.4 - (-degreesTurn - angle)/180); 
-			leftRear.set(-0.4 - (-degreesTurn - angle)/180);
-			rightFront.set(0.4 - (-degreesTurn - angle)/180);
-			rightRear.set(0.4 - (-degreesTurn - angle)/180);
+    		leftFront.set(0.4 - (-degreesTurn - gyro.getYaw())/180); 
+			leftRear.set(-0.4 - (-degreesTurn - gyro.getYaw())/180);
+			rightFront.set(0.4 - (-degreesTurn - gyro.getYaw())/180);
+			rightRear.set(0.4 - (-degreesTurn - gyro.getYaw())/180);
     	}
     }
     
